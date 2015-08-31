@@ -26,7 +26,7 @@ extern "C"
 {
 #endif
 
-#include "common.h"
+#include "commonx.h"
 
 extern SDL_Surface *gpScreen;
 extern SDL_Surface *gpScreenBak;
@@ -104,9 +104,7 @@ VIDEO_FadeScreen(
    WORD           wSpeed
 );
 
-VOID
-VIDEO_FastUpdate(
-);
+void VIDEO_SimpleUpdate();
 
 #ifdef __cplusplus
 }

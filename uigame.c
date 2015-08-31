@@ -516,14 +516,14 @@ PAL_SystemMenu(
    // Create menu items
    //
 #ifdef PAL_CLASSIC
-   MENUITEM        rgSystemMenuItem[5] =
+   MENUITEM        rgSystemMenuItem[3] =
    {
       // value  label                      enabled   pos
       { 1,      SYSMENU_LABEL_SAVE,        TRUE,     PAL_XY(53, 72) },
       { 2,      SYSMENU_LABEL_LOAD,        TRUE,     PAL_XY(53, 72 + 18) },
-      { 3,      SYSMENU_LABEL_MUSIC,       TRUE,     PAL_XY(53, 72 + 36) },
-      { 4,      SYSMENU_LABEL_SOUND,       TRUE,     PAL_XY(53, 72 + 54) },
-      { 5,      SYSMENU_LABEL_QUIT,        TRUE,     PAL_XY(53, 72 + 72) },
+//      { 3,      SYSMENU_LABEL_MUSIC,       TRUE,     PAL_XY(53, 72 + 36) },
+//      { 4,      SYSMENU_LABEL_SOUND,       TRUE,     PAL_XY(53, 72 + 54) },
+      { 5,      SYSMENU_LABEL_QUIT,        TRUE,     PAL_XY(53, 72 + 36) },
    };
 #else
    MENUITEM        rgSystemMenuItem[4] =
@@ -533,8 +533,8 @@ PAL_SystemMenu(
       { 2,      SYSMENU_LABEL_LOAD,        TRUE,     PAL_XY(53, 72 + 18) },
 //      { 3,      SYSMENU_LABEL_MUSIC,       TRUE,     PAL_XY(53, 72 + 36) },
 //      { 4,      SYSMENU_LABEL_SOUND,       TRUE,     PAL_XY(53, 72 + 54) },
-      { 5,      SYSMENU_LABEL_BATTLEMODE,  TRUE,     PAL_XY(53, 72 + 36) },
-      { 6,      SYSMENU_LABEL_QUIT,        TRUE,     PAL_XY(53, 72 + 54) },
+      { 5,      SYSMENU_LABEL_BATTLEMODE,  TRUE,     PAL_XY(53, 72 + 36) },//72
+      { 6,      SYSMENU_LABEL_QUIT,        TRUE,     PAL_XY(53, 72 + 54) },//90
    };
 #endif
 
@@ -542,9 +542,9 @@ PAL_SystemMenu(
    // Create the menu box.
    //
 #ifdef PAL_CLASSIC
-   lpMenuBox = PAL_CreateBox(PAL_XY(40, 60), 4, 3, 0, TRUE);
+   lpMenuBox = PAL_CreateBox(PAL_XY(40, 60), 2, 3, 0, TRUE);
 #else
-   lpMenuBox = PAL_CreateBox(PAL_XY(40, 60), 3, 3, 0, TRUE);
+   lpMenuBox = PAL_CreateBox(PAL_XY(40, 60), 3, 3, 0, TRUE);//5,3,0
 #endif
    VIDEO_UpdateScreen(&rect);
 
@@ -552,7 +552,7 @@ PAL_SystemMenu(
    // Perform the menu.
    //
 #ifdef PAL_CLASSIC
-   wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 5,
+   wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 3,
       gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR);
 #else
    wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 4,
@@ -1074,8 +1074,8 @@ PAL_PlayerStatus(
 
 --*/
 {
-   BYTE   bufBackground[320 * 200];//PAL_LARGE
-   BYTE   bufImage[16384];//PAL_LARGE
+   PAL_LARGE BYTE   bufBackground[320 * 200];
+   PAL_LARGE BYTE   bufImage[16384];
    int              iCurrent;
    int              iPlayerRole;
    int              i, y;
@@ -1162,12 +1162,12 @@ PAL_PlayerStatus(
          //
          // Draw the image
          //
-         //if (PAL_MKFReadChunk(bufImage, 16384,
-         //   gpGlobals->g.rgObject[w].item.wBitmap, gpGlobals->f.fpBALL) > 0)
-         //{
-         //   PAL_RLEBlitToSurface(bufImage, gpScreen,
-         //      PAL_XY(rgEquipPos[i][0], rgEquipPos[i][1]));
-         //}
+         if (PAL_MKFReadChunk(bufImage, 16384,
+            gpGlobals->g.rgObject[w].item.wBitmap, gpGlobals->f.fpBALL) > 0)
+         {
+            PAL_RLEBlitToSurface(bufImage, gpScreen,
+               PAL_XY(rgEquipPos[i][0], rgEquipPos[i][1]));
+         }
 
          //
          // Draw the text label
@@ -1258,7 +1258,7 @@ PAL_ItemUseMenu(
 --*/
 {
    BYTE           bColor, bSelectedColor;
-   BYTE bufImage[2048];//PAL_LARGE
+   PAL_LARGE BYTE bufImage[2048];
    DWORD          dwColorChangeTime;
    static WORD    wSelectedPlayer = 0;
    SDL_Rect       rect = {110, 2, 200, 180};
@@ -1357,11 +1357,11 @@ PAL_ItemUseMenu(
          //
          // Draw the picture of the item
          //
-         //if (PAL_MKFReadChunk(bufImage, 2048,
-         //   gpGlobals->g.rgObject[wItemToUse].item.wBitmap, gpGlobals->f.fpBALL) > 0)
-         //{
-         //   PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(127, 88));
-         //}
+         if (PAL_MKFReadChunk(bufImage, 2048,
+            gpGlobals->g.rgObject[wItemToUse].item.wBitmap, gpGlobals->f.fpBALL) > 0)
+         {
+            PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(127, 88));
+         }
 
          //
          // Draw the amount and label of the item
@@ -1470,7 +1470,7 @@ PAL_BuyMenu_OnItemChange(
 {
    const SDL_Rect      rect = {20, 8, 128, 175};
    int                 i, n;
-   BYTE      bufImage[2048];//PAL_LARGE
+   PAL_LARGE BYTE      bufImage[2048];
 
    //
    // Draw the picture of current selected item
@@ -1478,11 +1478,11 @@ PAL_BuyMenu_OnItemChange(
    PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_ITEMBOX), gpScreen,
       PAL_XY(35, 8));
 
-   //if (PAL_MKFReadChunk(bufImage, 2048,
-   //   gpGlobals->g.rgObject[wCurrentItem].item.wBitmap, gpGlobals->f.fpBALL) > 0)
-   //{
-   //   PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(42, 16));
-   //}
+   if (PAL_MKFReadChunk(bufImage, 2048,
+      gpGlobals->g.rgObject[wCurrentItem].item.wBitmap, gpGlobals->f.fpBALL) > 0)
+   {
+      PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(42, 16));
+   }
 
    //
    // See how many of this item we have in the inventory
@@ -1715,8 +1715,8 @@ PAL_EquipItemMenu(
 
 --*/
 {
-   BYTE   bufBackground[320 * 200];//PAL_LARGE
-   BYTE   bufImage[2048];//PAL_LARGE
+   PAL_LARGE BYTE   bufBackground[320 * 200];
+   PAL_LARGE BYTE   bufImage[2048];
    WORD             w;
    int              iCurrentPlayer, i;
    BYTE             bColor, bSelectedColor;
@@ -1743,11 +1743,11 @@ PAL_EquipItemMenu(
       //
       // Draw the item picture
       //
-      //if (PAL_MKFReadChunk(bufImage, 2048,
-      //   gpGlobals->g.rgObject[wItem].item.wBitmap, gpGlobals->f.fpBALL) > 0)
-      //{
-      //   PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(16, 16));
-      //}
+      if (PAL_MKFReadChunk(bufImage, 2048,
+         gpGlobals->g.rgObject[wItem].item.wBitmap, gpGlobals->f.fpBALL) > 0)
+      {
+         PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(16, 16));
+      }
 
       //
       // Draw the current equipment of the selected player

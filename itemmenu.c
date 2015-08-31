@@ -1,4 +1,5 @@
 //
+//
 // Copyright (c) 2009, Wei Mingzhi <whistler_wmz@users.sf.net>.
 // All rights reserved.
 //
@@ -172,8 +173,8 @@ PAL_ItemSelectMenuUpdate(
          //
          if (i == gpGlobals->iCurInvMenuItem)
          {
-            //PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_CURSOR),
-            //   gpScreen, PAL_XY(40 + k * 100, 22 + j * 18));
+            PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_CURSOR),
+               gpScreen, PAL_XY(40 + k * 100, 22 + j * 18));
          }
 
          //
@@ -192,12 +193,12 @@ PAL_ItemSelectMenuUpdate(
    //
    // Draw the picture of current selected item
    //
-   //PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_ITEMBOX), gpScreen,
-   //   PAL_XY(5, 140));
+   PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_ITEMBOX), gpScreen,
+      PAL_XY(5, 140));
 
    wObject = gpGlobals->rgInventory[gpGlobals->iCurInvMenuItem].wItem;
 
-   /*if (gpGlobals->g.rgObject[wObject].item.wBitmap != wPrevImageIndex)
+   if (gpGlobals->g.rgObject[wObject].item.wBitmap != wPrevImageIndex)
    {
       if (PAL_MKFReadChunk(bufImage, 2048,
          gpGlobals->g.rgObject[wObject].item.wBitmap, gpGlobals->f.fpBALL) > 0)
@@ -213,7 +214,7 @@ PAL_ItemSelectMenuUpdate(
    if (wPrevImageIndex != 0xFFFF)
    {
       PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(12, 148));
-   }*/
+   }
 
    //
    // Draw the description of the selected item
@@ -381,13 +382,14 @@ PAL_ItemSelectMenu(
 
    while (TRUE)
    {
-      /*if (lpfnMenuItemChanged == NULL)
+      if (lpfnMenuItemChanged == NULL)
       {
-         PAL_MakeScene();
-	  }*/
+         //PAL_MakeScene();
+		  SDL_FillRect(gpScreen, NULL, SDL_MapRGB(gpScreen->format, 0,0,0));
+      }
 
       w = PAL_ItemSelectMenuUpdate();
-      VIDEO_FastUpdate();
+      VIDEO_UpdateScreen(NULL);
 
       PAL_ClearKeyState();
 

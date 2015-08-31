@@ -52,8 +52,6 @@
 #include "midi.h"
 #endif
 
-extern LPBYTE lpGopBuf;
-
 VOID
 PAL_Shutdown(
    VOID

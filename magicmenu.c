@@ -115,8 +115,8 @@ PAL_MagicSelectionMenuUpdate(
       // Draw the MP of the selected magic.
       //
       PAL_CreateSingleLineBox(PAL_XY(215, 0), 5, FALSE);
-      //PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_SLASH),
-      //   gpScreen, PAL_XY(260, 14));
+      PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_SLASH),
+         gpScreen, PAL_XY(260, 14));
       PAL_DrawNumber(rgMagicItem[g_iCurrentItem].wMP, 4, PAL_XY(230, 14),
          kNumColorYellow, kNumAlignRight);
       PAL_DrawNumber(g_wPlayerMP, 4, PAL_XY(265, 14), kNumColorCyan, kNumAlignRight);
@@ -160,8 +160,8 @@ PAL_MagicSelectionMenuUpdate(
       // Draw the MP of the selected magic.
       //
       PAL_CreateSingleLineBox(PAL_XY(0, 0), 5, FALSE);
-      //PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_SLASH),
-      //   gpScreen, PAL_XY(45, 14));
+      PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_SLASH),
+         gpScreen, PAL_XY(45, 14));
       PAL_DrawNumber(rgMagicItem[g_iCurrentItem].wMP, 4, PAL_XY(15, 14),
          kNumColorYellow, kNumAlignRight);
       PAL_DrawNumber(g_wPlayerMP, 4, PAL_XY(50, 14), kNumColorCyan, kNumAlignRight);
@@ -216,11 +216,11 @@ PAL_MagicSelectionMenuUpdate(
          //
          // Draw the cursor on the current selected item
          //
-         /*if (i == g_iCurrentItem)
+         if (i == g_iCurrentItem)
          {
             PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, SPRITENUM_CURSOR),
                gpScreen, PAL_XY(60 + k * 87, 64 + j * 18));
-         }*/
+         }
 
          i++;
       }
@@ -394,7 +394,7 @@ PAL_MagicSelectionMenu(
    while (TRUE)
    {
       //PAL_MakeScene();
-
+		SDL_FillRect(gpScreen, NULL, SDL_MapRGB(gpScreen->format, 0,0,0));
       w = 45;
 
       for (i = 0; i <= gpGlobals->wMaxPartyMemberIndex; i++)

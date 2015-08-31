@@ -32,7 +32,6 @@
 #define   FONT_COLOR_CYAN_ALT       0x8C
 
 BOOL      g_fUpdatedInBattle      = FALSE;
-BOOL	  iseng	= FALSE;
 
 static const char g_rgszAdditionalWords[][WORD_LENGTH + 1] = {
    {0xBE, 0xD4, 0xB0, 0xAB, 0xB3, 0x74, 0xAB, 0xD7, 0x00, 0x00, 0x00}, // Battle Speed
@@ -89,24 +88,13 @@ PAL_InitText(
 --*/
 {
    FILE       *fpMsg, *fpWord;
-   unsigned char ch;
-   int         i,j;
+   int         i;
 
    //
    // Open the message and word data files.
    //
-   //fpMsg = UTIL_OpenRequiredFile("m.msg.tns");
-   fpMsg = fopen("./nPal/m_chs.msg.tns", "rb");
-   if (fpMsg==NULL)
-   {
-	   fpMsg = UTIL_OpenRequiredFile("m_eng.msg.tns");
-	   fpWord = UTIL_OpenRequiredFile("word_eng.dat.tns");
-	   iseng = TRUE;
-   }
-   else
-   {
-	   fpWord = UTIL_OpenRequiredFile("word_chs.dat.tns");
-   }
+   fpMsg = UTIL_OpenRequiredFile("m.msg.tns");
+   fpWord = UTIL_OpenRequiredFile("word.dat.tns");
 
    //
    // See how many words we have
@@ -150,27 +138,9 @@ PAL_InitText(
       fclose(fpMsg);
       return -1;
    }
-   
-   fseek(fpMsg, 0, SEEK_SET);
-   ch='\0';
 
-   for (j=0;j<i;j++)
-   {
-	  g_TextLib.lpMsgOffset[j]=ftell(fpMsg);
-	  ch=fgetc(fpMsg);
-	  if (iseng)
-	  {
-		while(ch!=0x0D)
-		ch=fgetc(fpMsg);
-	  }
-	  else
-	  {
-		while(ch!='\r')
-		ch=fgetc(fpMsg);
-	  }
-   }
-   //PAL_MKFReadChunk((LPBYTE)(g_TextLib.lpMsgOffset), i * sizeof(DWORD), 3,
-   //   gpGlobals->f.fpSSS);
+   PAL_MKFReadChunk((LPBYTE)(g_TextLib.lpMsgOffset), i * sizeof(DWORD), 3,
+      gpGlobals->f.fpSSS);
 
    //
    // Read the messages.
@@ -294,7 +264,7 @@ PAL_GetWord(
 
 LPCSTR
 PAL_GetMsg(
-   DWORD       wNumMsg
+   WORD       wNumMsg
 )
 /*++
   Purpose:
@@ -378,7 +348,6 @@ PAL_DrawText(
       //
       if (*lpszText & 0x80)
       {
-		  if (rect.x+16<320){
          //
          // BIG-5 Chinese Character
          //
@@ -392,32 +361,28 @@ PAL_DrawText(
          lpszText += 2;
          rect.x += 16;
          urect.w += 16;
-		}
       }
       else
       {
          //
          // ASCII character
          //
-		if ((rect.x+8)<320)
-		{
-			if (fShadow)
-			{
-				PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x + 1, rect.y + 1), 0);
-				PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x + 1, rect.y), 0);
-			}
-			PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x, rect.y), bColor);
-			lpszText++;
-			rect.x += 8;
-			urect.w += 8;
-		}
+         if (fShadow)
+         {
+            PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x + 1, rect.y + 1), 0);
+            PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x + 1, rect.y), 0);
+         }
+         PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x, rect.y), bColor);
+         lpszText++;
+         rect.x += 8;
+         urect.w += 8;
       }
    }
 
    //
    // Update the screen area
    //
-   if ((fUpdate && urect.w > 0)&&(urect.x+urect.w<320))
+   if (fUpdate && urect.w > 0)
    {
       VIDEO_UpdateScreen(&urect);
    }
@@ -596,7 +561,7 @@ PAL_DialogWaitForKey(
 
 --*/
 {
-   SDL_Color   palette[256];//PAL_LARGE
+   PAL_LARGE SDL_Color   palette[256];
    SDL_Color   *pCurrentPalette, t;
    int         i;
 
@@ -622,8 +587,7 @@ PAL_DialogWaitForKey(
          rect.w = 16;
          rect.h = 16;
 
-         if ((rect.x+16)<=320) 
-			PAL_RLEBlitToSurface(p, gpScreen, g_TextLib.posIcon);
+         PAL_RLEBlitToSurface(p, gpScreen, g_TextLib.posIcon);
          VIDEO_UpdateScreen(&rect);
       }
    }
@@ -740,7 +704,6 @@ PAL_ShowDialogText(
          rect.x = PAL_X(pos);
          rect.y = PAL_Y(pos);
          rect.w = 320 - rect.x * 2 + 32;
-		 if ((rect.x+rect.w)>319) rect.w=319-rect.x;
          rect.h = 64;
 
          //
@@ -806,7 +769,7 @@ PAL_ShowDialogText(
                lpszText++;
                break;
 
-            /*case '\'':
+            case '\'':
                //
                // Set the font color to Red
                //
@@ -819,7 +782,7 @@ PAL_ShowDialogText(
                   g_TextLib.bCurrentFontColor = FONT_COLOR_RED;
                }
                lpszText++;
-               break;*/
+               break;
 
             case '\"':
                //
@@ -888,13 +851,12 @@ PAL_ShowDialogText(
                }
 
                PAL_DrawText(text, PAL_XY(x, y), g_TextLib.bCurrentFontColor, TRUE, TRUE);
-               x += ((text[0] & 0x80) ? 16 : 7);
-			   if (x+16>319) x=303;
+               x += ((text[0] & 0x80) ? 16 : 8);
 
                if (!g_TextLib.fUserSkip)
                {
                   PAL_ClearKeyState();
-                  UTIL_Delay(g_TextLib.iDelayTime * 7);
+                  UTIL_Delay(g_TextLib.iDelayTime * 8);
 
                   if (g_InputState.dwKeyPress & (kKeySearch | kKeyMenu))
                   {

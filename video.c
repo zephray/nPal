@@ -29,11 +29,7 @@ SDL_Surface              *gpScreenBak        = NULL;
 // The real screen surface
 static SDL_Surface       *gpScreenReal       = NULL;
 
-#if (defined (__SYMBIAN32__) && !defined (__S60_5X__)) || defined (PSP) || defined (GEKKO)
-   static BOOL bScaleScreen = FALSE;
-#else
-   static BOOL bScaleScreen = FALSE;
-#endif
+static BOOL bScaleScreen = FALSE;
 
 // Initial screen size
 static WORD               g_wInitialWidth    = 320;
@@ -109,7 +105,7 @@ VIDEO_Init(
    gpScreenBak = SDL_CreateRGBSurface(gpScreenReal->flags & ~SDL_SWSURFACE, 320, 200, 8,
       gpScreenReal->format->Rmask, gpScreenReal->format->Gmask,
       gpScreenReal->format->Bmask, gpScreenReal->format->Amask);
-   
+
    SDL_FillRect(gpScreenReal, NULL, SDL_MapRGB(gpScreenReal->format, 0,0,0));
 
    //
@@ -299,50 +295,6 @@ VIDEO_UpdateScreen(
 }
 
 VOID
-VIDEO_FastUpdate(
-)
-/*++
-  Purpose:
-
-    Update the screen area.
-
-  Parameters:
-
-    None.
-
-  Return value:
-
-    None.
-
---*/
-{
-   SDL_Rect        dstrect;
-
-   //
-   // Lock surface if needed
-   //
-   if (SDL_MUSTLOCK(gpScreenReal))
-   {
-      if (SDL_LockSurface(gpScreenReal) < 0)
-         return;
-   }
-
-   dstrect.x = 0;
-   dstrect.y = 20;
-   dstrect.w = 320;
-   dstrect.h = 200;
-
-   SDL_SoftStretch(gpScreen, NULL, gpScreenReal, &dstrect);
-   if (SDL_MUSTLOCK(gpScreenReal))
-   {
-      SDL_UnlockSurface(gpScreenReal);
-   }
-   SDL_Flip(gpScreenReal);
-   //SDL_UpdateRect(gpScreenReal, 0, 0, 320, 240);
-}
-
-
-VOID
 VIDEO_SetPalette(
    SDL_Color        rgPalette[256]
 )
@@ -363,7 +315,7 @@ VIDEO_SetPalette(
 {
    SDL_SetPalette(gpScreenReal, SDL_LOGPAL, rgPalette, 0, 256);
 	static UINT32 time = 0;
-      if (SDL_GetTicks() - time > 5)
+      if (SDL_GetTicks() - time > 50)
       {
           SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
           time = SDL_GetTicks();
@@ -403,7 +355,7 @@ VIDEO_Resize(
 --*/
 {
    DWORD                    flags;
-   SDL_Color      palette[256];//PAL_LARGE
+   PAL_LARGE SDL_Color      palette[256];
    int                      i;
 
    //
@@ -714,7 +666,7 @@ VIDEO_FadeScreen(
    wSpeed++;
    wSpeed *= 10;
 
-   for (i = 0; i < 12; i++)
+   for (i = 0; i < 6; i++)
    {
       for (j = 0; j < 6; j++)
       {
@@ -735,19 +687,20 @@ VIDEO_FadeScreen(
             a = ((LPBYTE)(gpScreen->pixels))[k];
             b = ((LPBYTE)(gpScreenBak->pixels))[k];
 
-            if (i > 0)
+            b = b & 0x0F;
+            if ((a & 0x0F) != b)
             {
-               if ((a & 0x0F) > (b & 0x0F))
+               if ((a & 0x0F) > b)
                {
                   b++;
                }
-               else if ((a & 0x0F) < (b & 0x0F))
+               else
                {
                   b--;
                }
             }
 
-            ((LPBYTE)(gpScreenBak->pixels))[k] = ((a & 0xF0) | (b & 0x0F));
+            ((LPBYTE)(gpScreenBak->pixels))[k] = ((a & 0xF0) | b);
          }
 
          //

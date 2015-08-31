@@ -67,15 +67,15 @@ PAL_InitGlobals(
    //
    gpGlobals->f.fpFBP = UTIL_OpenRequiredFile("fbp.mkf.tns");
    gpGlobals->f.fpMGO = UTIL_OpenRequiredFile("mgo.mkf.tns");
-   //gpGlobals->f.fpBALL = UTIL_OpenRequiredFile("ball.mkf.tns");
+   gpGlobals->f.fpBALL = UTIL_OpenRequiredFile("ball.mkf.tns");
    gpGlobals->f.fpDATA = UTIL_OpenRequiredFile("data.mkf.tns");
    gpGlobals->f.fpF = UTIL_OpenRequiredFile("f.mkf.tns");
    gpGlobals->f.fpFIRE = UTIL_OpenRequiredFile("fire.mkf.tns");
    gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf.tns");
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf.tns");
-
+	printf("Stage 1\n");
    gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(va("%s%s", PAL_PREFIX, "desc.dat.tns"));
-
+	printf("Stage 2\n");
    gpGlobals->bCurrentSaveSlot = 1;
 
    return 0;

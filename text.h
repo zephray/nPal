@@ -48,7 +48,7 @@ PAL_GetWord(
 
 LPCSTR
 PAL_GetMsg(
-   DWORD       wNumMsg
+   WORD       wNumMsg
 );
 
 VOID

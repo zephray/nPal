@@ -612,7 +612,7 @@ PAL_WaitForKey(
 
    while (wTimeOut == 0 || SDL_GetTicks() < dwTimeOut)
    {
-      UTIL_Delay(3);
+      UTIL_Delay(5);
 
       if (g_InputState.dwKeyPress & (kKeySearch | kKeyMenu))
       {

@@ -269,7 +269,6 @@ PAL_CreateSingleLineBox(
    //
    rect.w = PAL_RLEGetWidth(lpBitmapLeft) + PAL_RLEGetWidth(lpBitmapRight);
    rect.w += PAL_RLEGetWidth(lpBitmapMid) * nLen;
-   if ((rect.x+rect.w)>320) rect.w=320-rect.x;
    rect.h = PAL_RLEGetHeight(lpBitmapLeft);
 
    if (fSaveScreen)
@@ -304,17 +303,17 @@ PAL_CreateSingleLineBox(
    //
    // Draw the box
    //
-   //PAL_RLEBlitToSurface(lpBitmapLeft, gpScreen, pos);
+   PAL_RLEBlitToSurface(lpBitmapLeft, gpScreen, pos);
 
-   //rect.x += PAL_RLEGetWidth(lpBitmapLeft);
+   rect.x += PAL_RLEGetWidth(lpBitmapLeft);
 
-   //for (i = 0; i < nLen; i++)
-   //{
-   //   PAL_RLEBlitToSurface(lpBitmapMid, gpScreen, PAL_XY(rect.x, rect.y));
-   //   rect.x += PAL_RLEGetWidth(lpBitmapMid);
-   //}
+   for (i = 0; i < nLen; i++)
+   {
+      PAL_RLEBlitToSurface(lpBitmapMid, gpScreen, PAL_XY(rect.x, rect.y));
+      rect.x += PAL_RLEGetWidth(lpBitmapMid);
+   }
 
-   //PAL_RLEBlitToSurface(lpBitmapRight, gpScreen, PAL_XY(rect.x, rect.y));
+   PAL_RLEBlitToSurface(lpBitmapRight, gpScreen, PAL_XY(rect.x, rect.y));
 
    return lpBox;
 }
@@ -691,7 +690,7 @@ PAL_LoadObjectDesc(
 --*/
 {
    FILE                      *fp;
-   char             buf[512];//PAL_LARGE
+   PAL_LARGE char             buf[512];
    char                      *p;
    LPOBJECTDESC               lpDesc = NULL, pNew = NULL;
    unsigned int               i;
@@ -702,7 +701,6 @@ PAL_LoadObjectDesc(
    {
       return NULL;
    }
-
    //
    // Load the description data
    //
@@ -713,17 +711,15 @@ PAL_LoadObjectDesc(
       {
          continue;
       }
-
       *p = '\0';
       p++;
 
       pNew = UTIL_calloc(1, sizeof(OBJECTDESC));
-
       sscanf(buf, "%x", &i);
       pNew->wObjectID = i;
+	  pNew->lpDesc = malloc(strlen(p));
 	  strcpy(pNew->lpDesc,p);
       //pNew->lpDesc = strdup(p);
-
       pNew->next = lpDesc;
       lpDesc = pNew;
    }

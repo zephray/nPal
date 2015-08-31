@@ -21,7 +21,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "common.h"
+#include "commonx.h"
 #include "map.h"
 #include "ui.h"
 

@@ -29,7 +29,7 @@ PAL_RNGReadFrame(
    UINT            uiBufferSize,
    UINT            uiRngNum,
    UINT            uiFrameNum,
-   char           *fpRngMKF
+   FILE           *fpRngMKF
 )
 /*++
   Purpose:
@@ -56,7 +56,7 @@ PAL_RNGReadFrame(
 
 --*/
 {
-   /*UINT         uiOffset       = 0;
+   UINT         uiOffset       = 0;
    UINT         uiSubOffset    = 0;
    UINT         uiNextOffset   = 0;
    UINT         uiChunkCount   = 0;
@@ -136,8 +136,7 @@ PAL_RNGReadFrame(
       return -1;
    }
 
-   return iChunkLen;*/
-   return 0;
+   return iChunkLen;
 }
 
 static INT
@@ -172,7 +171,7 @@ PAL_RNGBlitToSurface(
 
 --*/
 {
-/*   INT                   ptr         = 0;
+   INT                   ptr         = 0;
    INT                   dst_ptr     = 0;
    BYTE                  data        = 0;
    WORD                  wdata       = 0;
@@ -403,7 +402,6 @@ PAL_RNGBlitToSurface(
 
 end:
    free(rng);
-   return 0;*/
    return 0;
 }
 
@@ -435,15 +433,15 @@ PAL_RNGPlay(
 
 --*/
 {
-   //UINT            iTime;
-   //int             iDelay = 100 / (iSpeed == 0 ? 16 : iSpeed);
-   /*FILE           *fp;
+   UINT            iTime;
+   int             iDelay = 800 / (iSpeed == 0 ? 16 : iSpeed);
+   FILE           *fp;
 
    fp = UTIL_OpenRequiredFile("rng.mkf.tns");
 
    for (; iStartFrame <= iEndFrame; iStartFrame++)
    {
-      //iTime = SDL_GetTicks() + iDelay;
+      iTime = SDL_GetTicks() + iDelay;
 
       if (PAL_RNGBlitToSurface(iNumRNG, iStartFrame, gpScreen, fp) == -1)
       {
@@ -479,5 +477,5 @@ PAL_RNGPlay(
       }
    }
 
-   fclose(fp);*/
+   fclose(fp);
 }

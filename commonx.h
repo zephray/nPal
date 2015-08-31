@@ -72,10 +72,10 @@ extern "C"
 #endif
 #endif
 #ifndef PAL_PREFIX
-#define PAL_PREFIX            "/documents/nPal/"
+#define PAL_PREFIX            "./nPal/"
 #endif
 #ifndef PAL_SAVE_PREFIX
-#define PAL_SAVE_PREFIX       "/documents/nPal/"
+#define PAL_SAVE_PREFIX       "./nPal/"
 #endif
 
 #endif

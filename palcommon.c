@@ -22,8 +22,6 @@
 
 #include "palcommon.h"
 
-
-
 INT
 PAL_RLEBlitToSurface(
    LPCBITMAPRLE      lpBitmapRLE,

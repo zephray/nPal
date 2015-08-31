@@ -26,7 +26,7 @@ extern "C"
 {
 #endif
 
-#include "common.h"
+#include "commonx.h"
 
 #define CHUNKNUM_SPRITEUI                  9
 

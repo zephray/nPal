@@ -21,9 +21,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "common.h"
+#include "commonx.h"
 
-#define    FPS             10
+#define    FPS             15
 #define    FRAME_TIME      (1000 / FPS)
 
 VOID

@@ -22,8 +22,12 @@
 
 #include "main.h"
 #include <fdlibm.h>
+#include "touchpad.h"
 
 PALINPUTSTATE            g_InputState;
+int TPRelease = 0;
+int TPLastRead = 0;
+int TPPressed = 0;
 
 #if defined(GPH)
 #define MIN_DEADZONE -16384
@@ -49,6 +53,7 @@ PAL_KeyboardEventFilter(
 
 --*/
 {
+	int tpzone;
    switch (lpEvent->type)
    {
    case SDL_KEYDOWN:
@@ -84,33 +89,33 @@ PAL_KeyboardEventFilter(
          break;
 #endif
 
-      case SDLK_UP:
+      //case SDLK_UP:
       case SDLK_8:
-	  case SDLK_9:	  
+      case SDLK_9:
          g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
          g_InputState.dir = kDirNorth;
          g_InputState.dwKeyPress |= kKeyUp;
          break;
 
-      case SDLK_DOWN:
+      //case SDLK_DOWN:
       case SDLK_2:
-	  case SDLK_1:
+      case SDLK_1:
          g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
          g_InputState.dir = kDirSouth;
          g_InputState.dwKeyPress |= kKeyDown;
          break;
 
-      case SDLK_LEFT:
+      //case SDLK_LEFT:
       case SDLK_4:
-	  case SDLK_7:
+      case SDLK_7:
          g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
          g_InputState.dir = kDirWest;
          g_InputState.dwKeyPress |= kKeyLeft;
          break;
 
-      case SDLK_RIGHT:
+      //case SDLK_RIGHT:
       case SDLK_6:
-	  case SDLK_3:
+      case SDLK_3:
          g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
          g_InputState.dir = kDirEast;
          g_InputState.dwKeyPress |= kKeyRight;
@@ -132,8 +137,7 @@ PAL_KeyboardEventFilter(
            PAL_Shutdown();
            exit(0);
          }
-	  
-	  case SDLK_ESCAPE:	 
+      case SDLK_ESCAPE:
       case SDLK_MENU:
          g_InputState.dwKeyPress |= kKeyMenu;
          break;
@@ -145,12 +149,21 @@ PAL_KeyboardEventFilter(
          g_InputState.dwKeyPress |= kKeySearch;
          break;
 
-      //case SDLK_7: //7 for mobile device
+      case SDLK_PAGEUP:
+      case SDLK_KP_MULTIPLY:
+         g_InputState.dwKeyPress |= kKeyPgUp;
+         break;
+
+      case SDLK_PAGEDOWN:
+      case SDLK_KP_DIVIDE:
+         g_InputState.dwKeyPress |= kKeyPgDn;
+         break;
+
+	  case SDLK_TAB: //for nspire
       case SDLK_r:
          g_InputState.dwKeyPress |= kKeyRepeat;
          break;
 
-      //case SDLK_1: //1 for mobile device
       case SDLK_a:
          g_InputState.dwKeyPress |= kKeyAuto;
          break;
@@ -197,9 +210,9 @@ PAL_KeyboardEventFilter(
       //
       switch (lpEvent->key.keysym.sym)
       {
-      case SDLK_UP:
+      //case SDLK_UP:
       case SDLK_8:
-	  case SDLK_9:
+      case SDLK_9:
          if (g_InputState.dir == kDirNorth)
          {
             g_InputState.dir = g_InputState.prevdir;
@@ -207,9 +220,9 @@ PAL_KeyboardEventFilter(
          g_InputState.prevdir = kDirUnknown;
          break;
 
-      case SDLK_DOWN:
+      //case SDLK_DOWN:
       case SDLK_2:
-	  case SDLK_1:
+      case SDLK_1:
          if (g_InputState.dir == kDirSouth)
          {
             g_InputState.dir = g_InputState.prevdir;
@@ -217,9 +230,9 @@ PAL_KeyboardEventFilter(
          g_InputState.prevdir = kDirUnknown;
          break;
 
-      case SDLK_LEFT:
+      //case SDLK_LEFT:
       case SDLK_4:
-	  case SDLK_7:
+      case SDLK_7:
          if (g_InputState.dir == kDirWest)
          {
             g_InputState.dir = g_InputState.prevdir;
@@ -227,9 +240,9 @@ PAL_KeyboardEventFilter(
          g_InputState.prevdir = kDirUnknown;
          break;
 
-      case SDLK_RIGHT:
+      //case SDLK_RIGHT:
       case SDLK_6:
-	  case SDLK_3:
+      case SDLK_3:
          if (g_InputState.dir == kDirEast)
          {
             g_InputState.dir = g_InputState.prevdir;
@@ -242,6 +255,53 @@ PAL_KeyboardEventFilter(
       }
       break;
    }
+   //TP
+	if ((!isTPTouched())&&(TPRelease))
+	{
+		TPRelease = 0;
+		TPLastRead = 0;
+		TPPressed = 0;
+		g_InputState.dir = kDirUnknown;
+   }else if(isTPTouched())
+   {
+	   TPRelease = 1;
+	   tpzone = getTouchedZone9();
+	   if ((tpzone!=TPLastRead)||((!TPPressed)&&(isTPPressed()))){
+			switch (tpzone)
+			{
+			case 8:
+			case 9:
+				g_InputState.dir = kDirNorth;
+				g_InputState.dwKeyPress |= kKeyUp;
+				break;
+
+			case 2:
+			case 1:
+				g_InputState.dir = kDirSouth;
+				g_InputState.dwKeyPress |= kKeyDown;
+				break;
+
+			case 4:
+			case 7:
+				g_InputState.dir = kDirWest;
+				g_InputState.dwKeyPress |= kKeyLeft;
+				break;
+
+			case 6:
+			case 3:
+				g_InputState.dir = kDirEast;
+				g_InputState.dwKeyPress |= kKeyRight;
+				break;
+			
+			case 5:
+				g_InputState.dwKeyPress |= kKeySearch;
+				break;
+			}
+			TPLastRead = tpzone;
+		}
+		TPPressed = isTPPressed();
+   }
+	   
 }
 
 static VOID
@@ -537,7 +597,8 @@ PAL_InitInput(
 #else
    SDL_SetEventFilter(PAL_EventFilter, NULL);
 #endif
-
+	initTP();
+	readTP();
    //
    // Check for joystick
    //
@@ -587,5 +648,7 @@ PAL_ProcessEvent(
 #ifdef PAL_HAS_NATIVEMIDI
    MIDI_CheckLoop();
 #endif
+	readTP();
+	if ((isTPTouched())||(TPRelease)) PAL_KeyboardEventFilter(NULL);
    while (SDL_PollEvent(NULL));
 }

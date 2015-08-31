@@ -274,17 +274,17 @@ PAL_DrawASCIICharOnSurface(
    // Draw the character to the surface.
    //
    y *= lpSurface->pitch;
-  for (i = 0; i < 15; i++)
-  {
-     dx = x;
-     for (j = 0; j < 8; j++)
-     {
-        if (pChar[i] & (1 << j))
-        {
-           ((LPBYTE)(lpSurface->pixels))[y + dx] = bColor;
-        }
-        dx++;
-     }
-     y += lpSurface->pitch;
-  }
+   for (i = 0; i < 15; i++)
+   {
+      dx = x;
+      for (j = 0; j < 8; j++)
+      {
+         if (pChar[i] & (1 << j))
+         {
+            ((LPBYTE)(lpSurface->pixels))[y + dx] = bColor;
+         }
+         dx++;
+      }
+      y += lpSurface->pitch;
+   }
 }

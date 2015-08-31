@@ -21,7 +21,7 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include "common.h"
+#include "commonx.h"
 #include "palcommon.h"
 
 #ifdef __cplusplus

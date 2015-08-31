@@ -66,16 +66,13 @@ PAL_ShowFBP(
 
 --*/
 {
-   BYTE            buf;//PAL_LARGE
-   BYTE            bufSprite;//PAL_LARGE
+   PAL_LARGE BYTE            buf[320 * 200];
+   PAL_LARGE BYTE            bufSprite[320 * 200];
    const int                 rgIndex[6] = {0, 3, 1, 5, 2, 4};
    SDL_Surface              *p;
    int                       i, j, k;
    BYTE                      a, b;
 
-   buf = malloc(320*200);
-   bufSprite = malloc(320*200);
-   
    if (PAL_MKFDecompressChunk(buf, 320 * 200, wChunkNum, gpGlobals->f.fpFBP) <= 0)
    {
       memset(buf, 0, sizeof(buf));
@@ -180,8 +177,8 @@ PAL_ScrollFBP(
 --*/
 {
    SDL_Surface          *p;
-   BYTE        buf[320 * 200];//PAL_LARGE
-   BYTE        bufSprite[320 * 200];//PAL_LARGE
+   PAL_LARGE BYTE        buf[320 * 200];
+   PAL_LARGE BYTE        bufSprite[320 * 200];
    int                   i, l;
    SDL_Rect              rect, dstrect;
 

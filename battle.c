@@ -242,17 +242,17 @@ PAL_BattleFadeScene(
    
    time = SDL_GetTicks();
 
-   for (i = 0; i < 12; i++)
+   for (i = 1; i < 6; i++)
    {
       for (j = 0; j < 6; j++)
       {
          PAL_ProcessEvent();
-         while (SDL_GetTicks() <= time)
+         /*while (SDL_GetTicks() <= time)
          {
             PAL_ProcessEvent();
             SDL_Delay(1);
          }
-         time = SDL_GetTicks() + 16;
+         time = SDL_GetTicks() + 16;*/
 
          //
          // Blend the pixels in the 2 buffers, and put the result into the
@@ -263,19 +263,20 @@ PAL_BattleFadeScene(
             a = ((LPBYTE)(g_Battle.lpSceneBuf->pixels))[k];
             b = ((LPBYTE)(gpScreenBak->pixels))[k];
 
-            if (i > 0)
+			b = b & 0x0F;
+            if ((a & 0x0F) != b)
             {
-               if ((a & 0x0F) > (b & 0x0F))
+               if ((a & 0x0F) > b)
                {
                   b++;
                }
-               else if ((a & 0x0F) < (b & 0x0F))
+               else
                {
                   b--;
                }
             }
 
-            ((LPBYTE)(gpScreenBak->pixels))[k] = ((a & 0xF0) | (b & 0x0F));
+            ((LPBYTE)(gpScreenBak->pixels))[k] = ((a & 0xF0) | b);
          }
 
          //
@@ -331,7 +332,7 @@ PAL_BattleMain(
    // Fade out the music and delay for a while
    //
    //PAL_PlayMUS(0, FALSE, 1);
-   UTIL_Delay(160);
+   //UTIL_Delay(200);
 
    //
    // Switch the screen
@@ -585,7 +586,7 @@ PAL_LoadBattleBackground(
 
 --*/
 {
-   BYTE           buf;//PAL_LARGE
+   PAL_LARGE BYTE           buf[320 * 200];
 
    //
    // Create the surface
@@ -599,7 +600,7 @@ PAL_LoadBattleBackground(
    {
       TerminateOnError("PAL_LoadBattleBackground(): failed to create surface!");
    }
-   buf = malloc(320*200);
+
    //
    // Load the picture
    //

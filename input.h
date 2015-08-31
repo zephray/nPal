@@ -21,7 +21,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "common.h"
+#include "commonx.h"
 #include "palcommon.h"
 
 #ifdef __cplusplus
@@ -55,7 +55,6 @@ enum PALKEY
    kKeyFlee        = (1 << 13),
    kKeyStatus      = (1 << 14),
    kKeyForce       = (1 << 15),
-   
 };
 
 VOID
