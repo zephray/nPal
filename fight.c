@@ -19,7 +19,11 @@
 //
 
 #include "main.h"
+#ifdef USE_FDLIBM
 #include <fdlibm.h>
+#else
+#include <math.h>
+#endif
 
 //#define INVINCIBLE 1
 

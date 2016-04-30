@@ -21,7 +21,11 @@
 //
 
 #include "main.h"
+#ifdef USE_FDLIBM
 #include <fdlibm.h>
+#else
+#include <math.h>
+#endif
 #include "touchpad.h"
 
 PALINPUTSTATE            g_InputState;
