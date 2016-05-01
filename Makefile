@@ -1,6 +1,6 @@
 GCC = nspire-gcc
 LD = nspire-ld
-GCCFLAGS = -Os -Wall -W -marm -D USE_FDLIBM -D TOUCHPAD_SUPPORT -D NSPIRE
+GCCFLAGS = -Os -Wall -W -marm -D USE_FDLIBM -D TOUCHPAD_SUPPORT -D NSPIRE #-D ENABLE_LOG
 LDFLAGS = -lm
 OBJCOPY := "$(shell which arm-elf-objcopy 2>/dev/null)"
 ifeq (${OBJCOPY},"")

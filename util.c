@@ -497,10 +497,12 @@ UTIL_OpenRequiredFile(
    {
       TerminateOnError("File not found: %s!\n", va("%s%s", PAL_PREFIX, lpszFileName));
    }
+#ifdef ENABLE_LOG
    else
    {
       printf("Successfully opened file: %s\n", va("%s%s", PAL_PREFIX, lpszFileName));
    }
+#endif
 
    return fp;
 }
