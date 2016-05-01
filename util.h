@@ -30,6 +30,11 @@ extern "C"
 {
 #endif
 
+extern FILE       *resources;
+extern long int    offists[];
+//extern const char *fnames[];
+extern long int    current_position[];
+
 int util_sprintf(char *dest, const char *format, ...);
 int util_sscanf (char *dest, const char *format, ...);
 

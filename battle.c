@@ -564,7 +564,7 @@ PAL_LoadBattleSprites(
       g_Battle.rgEnemy[i].pos = PAL_XY(x, y);
    }
 
-   fclose(fp);
+   UTIL_CloseFile(fp);
 }
 
 static VOID

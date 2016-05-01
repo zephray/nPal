@@ -534,20 +534,22 @@ PAL_InitGameData(
 
 --*/
 {
-	
-	PAL_InitGlobalGameData();
+   puts("PAL_InitGlobalGameData");
+   PAL_InitGlobalGameData();
 
    gpGlobals->bCurrentSaveSlot = (BYTE)iSaveSlot;
 
    //
    // try loading from the saved game file.
    //
+   puts("try loading from the saved game file.");
    if (iSaveSlot == 0 || PAL_LoadSavedGame(va("%s%d%s", PAL_SAVE_PREFIX, iSaveSlot, ".rpg.tns")) != 0)
    {
       
       // Cannot load the saved game file. Load the defaults.
-      
+      puts("Cannot load the saved game file. Load the defaults.");
       PAL_LoadDefaultGame();
+      puts("PAL_LoadDefaultGame ended.");
    }
 
    gpGlobals->fGameStart = TRUE;
@@ -557,7 +559,9 @@ PAL_InitGameData(
 
    memset(gpGlobals->rgPlayerStatus, 0, sizeof(gpGlobals->rgPlayerStatus));
 
+   puts("PAL_UpdateEquipments started.");
    PAL_UpdateEquipments();
+   puts("PAL_UpdateEquipments ended.");
 }
 
 BOOL
@@ -862,6 +866,7 @@ PAL_UpdateEquipments(
 
          if (w != 0)
          {
+            printf("Entering PAL_RunTriggerScript\n");
             gpGlobals->g.rgObject[w].item.wScriptOnEquip =
                PAL_RunTriggerScript(gpGlobals->g.rgObject[w].item.wScriptOnEquip, (WORD)i);
          }

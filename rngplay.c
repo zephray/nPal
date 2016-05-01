@@ -70,6 +70,7 @@ PAL_RNGReadFrame(
    //
    // Get the total number of chunks.
    //
+   puts("Get the total number of chunks.");
    uiChunkCount = PAL_MKFGetChunkCount(fpRngMKF);
    if (uiRngNum >= uiChunkCount)
    {
@@ -79,19 +80,22 @@ PAL_RNGReadFrame(
    //
    // Get the offset of the chunk.
    //
-   fseek(fpRngMKF, 4 * uiRngNum, SEEK_SET);
-   fread(&uiOffset, sizeof(UINT), 1, fpRngMKF);
-   fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
+   puts("Get the offset of the chunk.");
+   _fseek(fpRngMKF, 4 * uiRngNum, SEEK_SET);
+   _fread(&uiOffset, sizeof(UINT), 1, fpRngMKF);
+   _fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
    uiOffset = SWAP32(uiOffset);
    uiNextOffset = SWAP32(uiNextOffset);
 
    //
    // Get the length of the chunk.
    //
+   puts("Get the length of the chunk."); // error below
    iChunkLen = uiNextOffset - uiOffset;
    if (iChunkLen != 0)
    {
-      fseek(fpRngMKF, uiOffset, SEEK_SET);
+      _fseek(fpRngMKF, uiOffset, SEEK_SET);
+      printf("23333333\n");
    }
    else
    {
@@ -101,7 +105,8 @@ PAL_RNGReadFrame(
    //
    // Get the number of sub chunks.
    //
-   fread(&uiChunkCount, sizeof(UINT), 1, fpRngMKF);
+   puts("Get the number of sub chunks.");
+   _fread(&uiChunkCount, sizeof(UINT), 1, fpRngMKF);
    uiChunkCount = (SWAP32(uiChunkCount) - 4) / 4;
    if (uiFrameNum >= uiChunkCount)
    {
@@ -111,25 +116,27 @@ PAL_RNGReadFrame(
    //
    // Get the offset of the sub chunk.
    //
-   fseek(fpRngMKF, uiOffset + 4 * uiFrameNum, SEEK_SET);
-   fread(&uiSubOffset, sizeof(UINT), 1, fpRngMKF);
-   fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
+   puts("Get the offset of the sub chunk.");
+   _fseek(fpRngMKF, uiOffset + 4 * uiFrameNum, SEEK_SET);
+   _fread(&uiSubOffset, sizeof(UINT), 1, fpRngMKF);
+   _fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
    uiSubOffset = SWAP32(uiSubOffset);
    uiNextOffset = SWAP32(uiNextOffset);
 
    //
    // Get the length of the sub chunk.
    //
+   puts("Get the length of the sub chunk.");
    iChunkLen = uiNextOffset - uiSubOffset;
    if ((UINT)iChunkLen > uiBufferSize)
    {
       return -2;
    }
-
+   puts("134");
    if (iChunkLen != 0)
    {
-      fseek(fpRngMKF, uiOffset + uiSubOffset, SEEK_SET);
-      fread(lpBuffer, iChunkLen, 1, fpRngMKF);
+      _fseek(fpRngMKF, uiOffset + uiSubOffset, SEEK_SET);
+      _fread(lpBuffer, iChunkLen, 1, fpRngMKF);
    }
    else
    {
@@ -201,7 +208,7 @@ PAL_RNGBlitToSurface(
       free(buf);
       return -1;
    }
-
+   puts("Great success on PAL_RNGReadFrame");
    //
    // Decompress the frame.
    //
@@ -438,28 +445,31 @@ PAL_RNGPlay(
    FILE           *fp;
 
    fp = UTIL_OpenRequiredFile("rng.mkf.tns");
-
+   puts("***PAL_RNGPlay 441***");
    for (; iStartFrame <= iEndFrame; iStartFrame++)
    {
       iTime = SDL_GetTicks() + iDelay;
-
+      puts("PAL_RNGBlitToSurface");
       if (PAL_RNGBlitToSurface(iNumRNG, iStartFrame, gpScreen, fp) == -1)
       {
          //
          // Failed to get the frame, don't go further
          //
-         fclose(fp);
+         puts("Failed to get the frame, don't go further");
+         UTIL_CloseFile(fp);
          return;
       }
 
       //
       // Update the screen
       //
+      puts("Update the screen");
       VIDEO_UpdateScreen(NULL);
 
       //
       // Fade in the screen if needed
       //
+      puts("Fade in the screen if needed");
       if (gpGlobals->fNeedToFadeIn)
       {
          PAL_FadeIn(gpGlobals->wNumPalette, gpGlobals->fNightPalette, 1);
@@ -469,6 +479,7 @@ PAL_RNGPlay(
       //
       // Delay for a while
       //
+      puts("Delay for a while");
       PAL_ProcessEvent();
       while (SDL_GetTicks() <= iTime)
       {
@@ -477,5 +488,5 @@ PAL_RNGPlay(
       }
    }
 
-   fclose(fp);
+   UTIL_CloseFile(fp);
 }

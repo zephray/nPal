@@ -86,11 +86,17 @@ PAL_Init(
    {
       TerminateOnError("Could not initialize global data: %d.\n", e);
    }
+   else {
+      puts("Great success on PAL_InitGlobals");
+   }
 
    e = PAL_InitFont();
    if (e != 0)
    {
       TerminateOnError("Could not load fonts: %d.\n", e);
+   }
+   else {
+      puts("Great success on PAL_InitFont");
    }
 
    e = PAL_InitUI();
@@ -98,15 +104,23 @@ PAL_Init(
    {
       TerminateOnError("Could not initialize UI subsystem: %d.\n", e);
    }
+   else {
+      puts("Great success on PAL_InitUI");
+   }
 
    e = PAL_InitText();
    if (e != 0)
    {
       TerminateOnError("Could not initialize text subsystem: %d.\n", e);
    }
+   else {
+      puts("Great success on PAL_InitText");
+   }
 
    PAL_InitInput();
+   puts("Great success on PAL_InitInput");
    PAL_InitResources();
+   puts("Great success on PAL_InitResources");
    //SOUND_OpenAudio();
 
 }
@@ -140,7 +154,7 @@ PAL_Shutdown(
    VIDEO_Shutdown();
 
    UTIL_CloseLog();
-
+   fclose(resources);
    SDL_Quit();
 #if defined(GPH)
 	chdir("/usr/gp2x");
@@ -167,10 +181,12 @@ PAL_TrademarkScreen(
 
 --*/
 {
-   PAL_SetPalette(3, FALSE);
-   PAL_RNGPlay(6, 0, 1000, 25);
-   UTIL_Delay(1000);
-   PAL_FadeOut(1);
+   puts("Entering PAL_TrademarkScreen");
+   puts("185");PAL_SetPalette(3, FALSE);
+   puts("186");PAL_RNGPlay(6, 0, 1000, 25);
+   puts("187");UTIL_Delay(1000);
+   puts("188");PAL_FadeOut(1);
+   puts("Exiting PAL_TrademarkScreen");
 }
 
 VOID

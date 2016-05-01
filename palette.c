@@ -54,7 +54,7 @@ PAL_GetPalette(
    //
    i = PAL_MKFReadChunk(buf, 1536, iPaletteNum, fp);
 
-   fclose(fp);
+   UTIL_CloseFile(fp);
 
    if (i < 0)
    {
