@@ -402,6 +402,10 @@ TerminateOnError(
    system(va("beep; xmessage -center \"FATAL ERROR: %s\"", string));
 #endif
 
+#ifdef NSPIRE
+   show_msgbox("FATAL ERROR", string);
+#endif
+
 #if defined(__SYMBIAN32__)
    UTIL_WriteLog(LOG_DEBUG,"[0x%08x][%s][%s] - %s",(long)TerminateOnError,"TerminateOnError",__FILE__, string);
    SDL_Delay(3000);
@@ -487,11 +491,15 @@ UTIL_OpenRequiredFile(
 {
    FILE         *fp;
 
-   fp = fopen(va("%s%s", "./nPal/", lpszFileName), "rb");
-
+   fp = fopen(va("%s%s", PAL_PREFIX, lpszFileName), "rb");
+	
    if (fp == NULL)
    {
-      TerminateOnError("File not found: %s!\n", lpszFileName);
+      TerminateOnError("File not found: %s!\n", va("%s%s", PAL_PREFIX, lpszFileName));
+   }
+   else
+   {
+      printf("Successfully opened file: %s\n", va("%s%s", PAL_PREFIX, lpszFileName));
    }
 
    return fp;

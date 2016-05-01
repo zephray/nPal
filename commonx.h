@@ -71,13 +71,8 @@ extern "C"
 #define PAL_HAS_MP3           0
 #endif
 #endif
-#ifndef PAL_PREFIX
-#define PAL_PREFIX            "./nPal/"
-#endif
-#ifndef PAL_SAVE_PREFIX
-#define PAL_SAVE_PREFIX       "./nPal/"
-#endif
-
+#define PAL_SAVE_PREFIX       "/documents/npal/"
+#define PAL_PREFIX            "/documents/npal/"
 #endif
 
 #ifndef SDL_INIT_CDROM

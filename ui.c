@@ -717,8 +717,8 @@ PAL_LoadObjectDesc(
       pNew = UTIL_calloc(1, sizeof(OBJECTDESC));
       sscanf(buf, "%x", &i);
       pNew->wObjectID = i;
-	  pNew->lpDesc = malloc(strlen(p));
-	  strcpy(pNew->lpDesc,p);
+	    pNew->lpDesc = malloc(strlen(p));
+	    strcpy(pNew->lpDesc,p);
       //pNew->lpDesc = strdup(p);
       pNew->next = lpDesc;
       lpDesc = pNew;

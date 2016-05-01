@@ -93,7 +93,7 @@ PAL_InitText(
    //
    // Open the message and word data files.
    //
-   fpMsg = UTIL_OpenRequiredFile("m.msg.tns");
+   
    fpWord = UTIL_OpenRequiredFile("word.dat.tns");
 
    //
@@ -125,6 +125,8 @@ PAL_InitText(
    //
    fclose(fpWord);
 
+   
+   fpMsg = UTIL_OpenRequiredFile("m.msg.tns");
    //
    // Read the message offsets. The message offsets are in SSS.MKF #3
    //
