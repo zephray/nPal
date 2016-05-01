@@ -706,7 +706,7 @@ PAL_MKFGetChunkSize(
    //
    // Get the total number of chunks.
    //
-   puts("***PAL_MKFGetChunkSize 710***");uiChunkCount = PAL_MKFGetChunkCount(fp);
+   uiChunkCount = PAL_MKFGetChunkCount(fp);
    if (uiChunkNum >= uiChunkCount)
    {
       return -1;

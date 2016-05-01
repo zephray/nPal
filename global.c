@@ -73,9 +73,7 @@ PAL_InitGlobals(
    gpGlobals->f.fpFIRE = UTIL_OpenRequiredFile("fire.mkf.tns");
    gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf.tns");
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf.tns");
-	 printf("Stage 1\n");
    //gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(va("%s%s", PAL_PREFIX, "desc.dat.tns"));
-	 printf("Stage 2\n");
    gpGlobals->bCurrentSaveSlot = 1;
 
    return 0;
@@ -534,7 +532,6 @@ PAL_InitGameData(
 
 --*/
 {
-   puts("PAL_InitGlobalGameData");
    PAL_InitGlobalGameData();
 
    gpGlobals->bCurrentSaveSlot = (BYTE)iSaveSlot;
@@ -542,14 +539,11 @@ PAL_InitGameData(
    //
    // try loading from the saved game file.
    //
-   puts("try loading from the saved game file.");
    if (iSaveSlot == 0 || PAL_LoadSavedGame(va("%s%d%s", PAL_SAVE_PREFIX, iSaveSlot, ".rpg.tns")) != 0)
    {
       
       // Cannot load the saved game file. Load the defaults.
-      puts("Cannot load the saved game file. Load the defaults.");
       PAL_LoadDefaultGame();
-      puts("PAL_LoadDefaultGame ended.");
    }
 
    gpGlobals->fGameStart = TRUE;
@@ -559,9 +553,7 @@ PAL_InitGameData(
 
    memset(gpGlobals->rgPlayerStatus, 0, sizeof(gpGlobals->rgPlayerStatus));
 
-   puts("PAL_UpdateEquipments started.");
    PAL_UpdateEquipments();
-   puts("PAL_UpdateEquipments ended.");
 }
 
 BOOL
@@ -866,7 +858,6 @@ PAL_UpdateEquipments(
 
          if (w != 0)
          {
-            printf("Entering PAL_RunTriggerScript\n");
             gpGlobals->g.rgObject[w].item.wScriptOnEquip =
                PAL_RunTriggerScript(gpGlobals->g.rgObject[w].item.wScriptOnEquip, (WORD)i);
          }

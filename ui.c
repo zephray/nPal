@@ -46,19 +46,19 @@ PAL_InitUI(
    //
    // Load the UI sprite.
    //
-   puts("***PAL_InitUI 49***");iSize = PAL_MKFGetChunkSize(CHUNKNUM_SPRITEUI, gpGlobals->f.fpDATA);
+   iSize = PAL_MKFGetChunkSize(CHUNKNUM_SPRITEUI, gpGlobals->f.fpDATA);
    if (iSize <= 0)
    {
       return -1;
    }
    
-   puts("***PAL_InitUI 55***");gpSpriteUI = (LPSPRITE)calloc(1, iSize);
+   gpSpriteUI = (LPSPRITE)calloc(1, iSize);
    if (gpSpriteUI == NULL)
    {
       return -2;
    }
 
-   puts("***PAL_InitUI 61***");PAL_MKFReadChunk(gpSpriteUI, iSize, CHUNKNUM_SPRITEUI, gpGlobals->f.fpDATA);
+   PAL_MKFReadChunk(gpSpriteUI, iSize, CHUNKNUM_SPRITEUI, gpGlobals->f.fpDATA);
 
    return 0;
 }

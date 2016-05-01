@@ -93,26 +93,22 @@ PAL_InitText(
    //
    // Open the message and word data files.
    //
-   puts("Open the message and word data files."); 
    fpWord = UTIL_OpenRequiredFile("word.dat.tns");
 
    //
    // See how many words we have
    //
-   puts("See how many words we have");
    _fseek(fpWord, 0, SEEK_END);
    i = _ftell(fpWord);
 
    //
    // Each word has 10 bytes
    //
-   puts("Each word has 10 bytes");
    g_TextLib.nWords = (i + (WORD_LENGTH - 1)) / WORD_LENGTH;
 
    //
    // Read the words
    //
-   puts("Read the words");
    g_TextLib.lpWordBuf = (LPBYTE)malloc(i);
    if (g_TextLib.lpWordBuf == NULL)
    {
@@ -126,7 +122,6 @@ PAL_InitText(
    //
    // Close the words file
    //
-   puts("Close the words file");
    UTIL_CloseFile(fpWord);
 
    
@@ -134,7 +129,6 @@ PAL_InitText(
    //
    // Read the message offsets. The message offsets are in SSS.MKF #3
    //
-   puts("Read the message offsets. The message offsets are in SSS.MKF #3");
    i = PAL_MKFGetChunkSize(3, gpGlobals->f.fpSSS) / sizeof(DWORD);
    g_TextLib.nMsgs = i - 1;
 
@@ -152,7 +146,6 @@ PAL_InitText(
    //
    // Read the messages.
    //
-   puts("Read the messages.");
    _fseek(fpMsg, 0, SEEK_END);
    i = _ftell(fpMsg);
 

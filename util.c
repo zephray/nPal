@@ -564,8 +564,6 @@ UTIL_OpenRequiredFile(
 
    for (index = 0; filename[index] != '\0'; ++index)
       filename[index] = c_util_touppertable[filename[index]];
-   
-   printf("start to find %s\n", filename);
 
    for (index = 0; fnames[index][0]; ++index) {
       if (strcmp(fnames[index], filename) == 0) break;
