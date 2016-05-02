@@ -74,8 +74,8 @@ PAL_InitFont(
    //
    // Get the size of wor16.asc file.
    //
-   fseek(fp, 0, SEEK_END);
-   gpFont->nChar = ftell(fp);
+   _fseek(fp, 0, SEEK_END);
+   gpFont->nChar = _ftell(fp);
    gpFont->nChar /= 2;
 
    //
@@ -89,13 +89,13 @@ PAL_InitFont(
       return -1;
    }
 
-   fseek(fp, 0, SEEK_SET);
-   fread(gpFont->lpBufChar, sizeof(WORD), gpFont->nChar, fp);
+   _fseek(fp, 0, SEEK_SET);
+   _fread(gpFont->lpBufChar, sizeof(WORD), gpFont->nChar, fp);
 
    //
    // Close wor16.asc file.
    //
-   fclose(fp);
+   UTIL_CloseFile(fp);
 
    //
    // Read all bitmaps from wor16.fon file.
@@ -114,9 +114,9 @@ PAL_InitFont(
    //
    // The font glyph data begins at offset 0x682 in wor16.fon.
    //
-   fseek(fp, 0x682, SEEK_SET);
-   fread(gpFont->lpBufGlyph, 30, gpFont->nChar, fp);
-   fclose(fp);
+   _fseek(fp, 0x682, SEEK_SET);
+   _fread(gpFont->lpBufGlyph, 30, gpFont->nChar, fp);
+   UTIL_CloseFile(fp);
 
    return 0;
 }

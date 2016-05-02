@@ -140,7 +140,7 @@ PAL_Shutdown(
    VIDEO_Shutdown();
 
    UTIL_CloseLog();
-
+   fclose(resources);
    SDL_Quit();
 #if defined(GPH)
 	chdir("/usr/gp2x");

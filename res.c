@@ -244,8 +244,8 @@ PAL_LoadResources(
 
       if (gpResources->lpMap == NULL)
       {
-         fclose(fpMAP);
-         fclose(fpGOP);
+         UTIL_CloseFile(fpMAP);
+         UTIL_CloseFile(fpGOP);
 
          TerminateOnError("PAL_LoadResources(): Fail to load map #%d (scene #%d) !",
             gpGlobals->g.rgScene[i].wMapNum, gpGlobals->wNumScene);
@@ -290,8 +290,8 @@ PAL_LoadResources(
 
       gpGlobals->partyoffset = PAL_XY(160, 112);
 
-      fclose(fpGOP);
-      fclose(fpMAP);
+      UTIL_CloseFile(fpGOP);
+      UTIL_CloseFile(fpMAP);
    }
 
    //

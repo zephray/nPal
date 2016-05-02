@@ -31,7 +31,7 @@ void readTP()//读取TP状态
 void readFullTP()//进行延时后再读取TP状态
 {
 #ifdef TOUCHPAD_SUPPORT
-        wait(TOUCHPAD_DELAY); // lets the time to compute velocity
+        sleep(TOUCHPAD_DELAY); // lets the time to compute velocity
         readTP();
 #endif
 }

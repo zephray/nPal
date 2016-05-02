@@ -30,6 +30,11 @@ extern "C"
 {
 #endif
 
+extern FILE       *resources;
+extern long int    offists[];
+//extern const char *fnames[];
+extern long int    current_position[];
+
 int util_sprintf(char *dest, const char *format, ...);
 int util_sscanf (char *dest, const char *format, ...);
 
@@ -87,7 +92,7 @@ UTIL_CloseFile(
    FILE                *fp
 );
 
-#define _PATH_LOG           PAL_PREFIX "log.txt"
+#define _PATH_LOG           PAL_PREFIX "log.txt.tns"
 #define LOG_EMERG           0 /* system is unusable */
 #define LOG_ALERT           1 /* action must be taken immediately */
 #define LOG_CRIT            2 /* critical conditions */

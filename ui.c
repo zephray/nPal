@@ -47,15 +47,15 @@ PAL_InitUI(
    // Load the UI sprite.
    //
    iSize = PAL_MKFGetChunkSize(CHUNKNUM_SPRITEUI, gpGlobals->f.fpDATA);
-   if (iSize < 0)
+   if (iSize <= 0)
    {
       return -1;
    }
-
+   
    gpSpriteUI = (LPSPRITE)calloc(1, iSize);
    if (gpSpriteUI == NULL)
    {
-      return -1;
+      return -2;
    }
 
    PAL_MKFReadChunk(gpSpriteUI, iSize, CHUNKNUM_SPRITEUI, gpGlobals->f.fpDATA);
@@ -717,8 +717,8 @@ PAL_LoadObjectDesc(
       pNew = UTIL_calloc(1, sizeof(OBJECTDESC));
       sscanf(buf, "%x", &i);
       pNew->wObjectID = i;
-	  pNew->lpDesc = malloc(strlen(p));
-	  strcpy(pNew->lpDesc,p);
+	    pNew->lpDesc = malloc(strlen(p));
+	    strcpy(pNew->lpDesc,p);
       //pNew->lpDesc = strdup(p);
       pNew->next = lpDesc;
       lpDesc = pNew;

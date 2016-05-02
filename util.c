@@ -22,6 +22,7 @@
 //
 
 #include "util.h"
+#include <string.h>
 
 #ifdef PAL_HAS_NATIVEMIDI
 #include "midi.h"
@@ -124,6 +125,53 @@ typedef union
  
 
 static TYPE_NUM_T  g_type_data;
+
+const char        fnames[][1024] = {
+                     "ABC.MKF.TNS",  //0
+                     "BALL.MKF.TNS", //1
+                     "DATA.MKF.TNS", //2
+                     "DESC.DAT.TNS", //3
+                     "F.MKF.TNS",    //4
+                     "FBP.MKF.TNS",  //5
+                     "FIRE.MKF.TNS", //6
+                     "GOP.MKF.TNS",  //7
+                     "M.MSG.TNS",    //8
+                     "MAP.MKF.TNS",  //9
+                     "MGO.MKF.TNS",  //10
+                     "PAT.MKF.TNS",  //11
+                     "RGM.MKF.TNS",  //12
+                     "RNG.MKF.TNS",  //13
+                     "SSS.MKF.TNS",  //14
+                     "WOR16.ASC.TNS",//15
+                     "WOR16.FON.TNS",//16
+                     "WORD.DAT.TNS", //17
+                     ""              //18
+                   };
+FILE              *resources = NULL;
+long int           offists[] = {
+                      0x0,            //0
+                      0xF9A64,        //1
+                      0x11A894,       //2
+                      0x12AC06,       //3
+                      0x12EA9E,       //4
+                      0x15C4F4,       //5
+                      0x26FB74,       //6
+                      0x33B81C,       //7
+                      0xE3A86E,       //8
+                      0xE6E72A,       //9
+                      0xFE4992,       //10
+                      0x1165B74,      //11
+                      0x1167C9C,      //12
+                      0x11D66EE,      //13
+                      0x162C508,      //14
+                      0x16B7630,      //15
+                      0x16B8A10,      //16
+                      0x16CBAB2,      //17
+                      0x16CD0C4
+                   };
+long int           current_position[18] = {
+                      0x0
+                   };
 
 void
 trim(
@@ -402,6 +450,10 @@ TerminateOnError(
    system(va("beep; xmessage -center \"FATAL ERROR: %s\"", string));
 #endif
 
+#ifdef NSPIRE
+   show_msgbox("FATAL ERROR", string);
+#endif
+
 #if defined(__SYMBIAN32__)
    UTIL_WriteLog(LOG_DEBUG,"[0x%08x][%s][%s] - %s",(long)TerminateOnError,"TerminateOnError",__FILE__, string);
    SDL_Delay(3000);
@@ -466,6 +518,19 @@ UTIL_calloc(
    return buffer; // nothing went wrong, so return buffer pointer
 }
 
+int strsame(const char *s1, const char *s2) {
+   while (*s1 && *s2) {
+      if (*s1 != *s2) {
+         return FALSE;
+      }
+      s1++, s2++;
+   }
+   if (*s1 != *s2) {
+      return FALSE;
+   }
+   return TRUE;
+}
+
 FILE *
 UTIL_OpenRequiredFile(
    LPCSTR            lpszFileName
@@ -485,16 +550,77 @@ UTIL_OpenRequiredFile(
 
 --*/
 {
-   FILE         *fp;
+   int index;
+   char filename[512];
 
-   fp = fopen(va("%s%s", "./nPal/", lpszFileName), "rb");
+   if (resources == NULL) {
+      resources = fopen(PAL_PREFIX "resources.bin.tns", "rb");
+      if (resources == NULL) {
+         TerminateOnError("File not found: %s!\n", va("%s%s", PAL_PREFIX, "resources.bin.tns"));
+      }
+   }
+   
+   strcpy(filename, lpszFileName);
 
-   if (fp == NULL)
-   {
-      TerminateOnError("File not found: %s!\n", lpszFileName);
+   for (index = 0; filename[index] != '\0'; ++index)
+      filename[index] = c_util_touppertable[filename[index]];
+
+   for (index = 0; fnames[index][0]; ++index) {
+      if (strcmp(fnames[index], filename) == 0) break;
    }
 
-   return fp;
+   if (fnames[index][0] == 0) {
+      TerminateOnError("File not found: %s!\n", filename);
+   }
+#ifdef ENABLE_LOG
+   else
+   {
+      printf("Successfully opened file: %s, %d\n", va("%s%s", PAL_PREFIX, lpszFileName), index);
+   }
+#endif
+   // don't blame me for this shit
+   return (FILE *)index;
+}
+
+void _fseek(FILE *fp, long int off, int type) {
+   int index = (int)fp;    // i know it's terrible ...
+   /*printf("Starting to _fseek, file %s, offist %d, type %d => ",
+      fnames[index],
+      off, type);*/
+   switch (type) {
+      case SEEK_SET:
+         current_position[index] = off;
+         break;
+      case SEEK_END:
+         current_position[index] = offists[index + 1] - offists[index] - off;
+         break;
+      case SEEK_CUR:
+         current_position[index] += off;
+      default:
+         break;
+   }
+   /*printf("0x%x\n", current_position[index]);*/
+}
+
+void _fread(void *ptr, size_t size, size_t count, FILE *fp) {
+   int index = (int)fp;    // sorry im doing this again ...
+   fseek(resources, offists[index] + current_position[index], SEEK_SET);
+   /*printf("Starting to read %s at %x where real pos is %x",
+      fnames[index], current_position[index],
+      offists[index] + current_position[index]
+      );*/
+   fread(ptr, size, count, resources);
+   current_position[index] = ftell(resources) - offists[index];
+   if (current_position[index] < 0)
+      current_position[index] = 0;
+   if (current_position[index] >= offists[index + 1] - offists[index])
+      current_position[index] = offists[index + 1] - offists[index];
+   /*printf(" => %x\n", current_position[index]);*/
+}
+
+long int _ftell(FILE *fp) {
+   int index = (int)fp;    // sorry im doing this again and again...
+   return current_position[index];
 }
 
 VOID
@@ -516,10 +642,7 @@ UTIL_CloseFile(
 
 --*/
 {
-   if (fp != NULL)
-   {
-      fclose(fp);
-   }
+   return; // Doing nothing.
 }
 
 #ifdef ENABLE_LOG

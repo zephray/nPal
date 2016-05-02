@@ -79,9 +79,9 @@ PAL_RNGReadFrame(
    //
    // Get the offset of the chunk.
    //
-   fseek(fpRngMKF, 4 * uiRngNum, SEEK_SET);
-   fread(&uiOffset, sizeof(UINT), 1, fpRngMKF);
-   fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
+   _fseek(fpRngMKF, 4 * uiRngNum, SEEK_SET);
+   _fread(&uiOffset, sizeof(UINT), 1, fpRngMKF);
+   _fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
    uiOffset = SWAP32(uiOffset);
    uiNextOffset = SWAP32(uiNextOffset);
 
@@ -91,7 +91,7 @@ PAL_RNGReadFrame(
    iChunkLen = uiNextOffset - uiOffset;
    if (iChunkLen != 0)
    {
-      fseek(fpRngMKF, uiOffset, SEEK_SET);
+      _fseek(fpRngMKF, uiOffset, SEEK_SET);
    }
    else
    {
@@ -101,7 +101,7 @@ PAL_RNGReadFrame(
    //
    // Get the number of sub chunks.
    //
-   fread(&uiChunkCount, sizeof(UINT), 1, fpRngMKF);
+   _fread(&uiChunkCount, sizeof(UINT), 1, fpRngMKF);
    uiChunkCount = (SWAP32(uiChunkCount) - 4) / 4;
    if (uiFrameNum >= uiChunkCount)
    {
@@ -111,9 +111,9 @@ PAL_RNGReadFrame(
    //
    // Get the offset of the sub chunk.
    //
-   fseek(fpRngMKF, uiOffset + 4 * uiFrameNum, SEEK_SET);
-   fread(&uiSubOffset, sizeof(UINT), 1, fpRngMKF);
-   fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
+   _fseek(fpRngMKF, uiOffset + 4 * uiFrameNum, SEEK_SET);
+   _fread(&uiSubOffset, sizeof(UINT), 1, fpRngMKF);
+   _fread(&uiNextOffset, sizeof(UINT), 1, fpRngMKF);
    uiSubOffset = SWAP32(uiSubOffset);
    uiNextOffset = SWAP32(uiNextOffset);
 
@@ -125,11 +125,10 @@ PAL_RNGReadFrame(
    {
       return -2;
    }
-
    if (iChunkLen != 0)
    {
-      fseek(fpRngMKF, uiOffset + uiSubOffset, SEEK_SET);
-      fread(lpBuffer, iChunkLen, 1, fpRngMKF);
+      _fseek(fpRngMKF, uiOffset + uiSubOffset, SEEK_SET);
+      _fread(lpBuffer, iChunkLen, 1, fpRngMKF);
    }
    else
    {
@@ -201,7 +200,6 @@ PAL_RNGBlitToSurface(
       free(buf);
       return -1;
    }
-
    //
    // Decompress the frame.
    //
@@ -438,17 +436,15 @@ PAL_RNGPlay(
    FILE           *fp;
 
    fp = UTIL_OpenRequiredFile("rng.mkf.tns");
-
    for (; iStartFrame <= iEndFrame; iStartFrame++)
    {
       iTime = SDL_GetTicks() + iDelay;
-
       if (PAL_RNGBlitToSurface(iNumRNG, iStartFrame, gpScreen, fp) == -1)
       {
          //
          // Failed to get the frame, don't go further
          //
-         fclose(fp);
+         UTIL_CloseFile(fp);
          return;
       }
 
@@ -477,5 +473,5 @@ PAL_RNGPlay(
       }
    }
 
-   fclose(fp);
+   UTIL_CloseFile(fp);
 }

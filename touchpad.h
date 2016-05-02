@@ -1,4 +1,3 @@
-#define TOUCHPAD_SUPPORT
 #define TOUCHPAD_DELAY        45
 
 #ifdef TOUCHPAD_SUPPORT

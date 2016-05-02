@@ -669,8 +669,8 @@ PAL_MKFGetChunkCount(
       return 0;
    }
 
-   fseek(fp, 0, SEEK_SET);
-   fread(&iNumChunk, sizeof(INT), 1, fp);
+   _fseek(fp, 0, SEEK_SET);
+   _fread(&iNumChunk, sizeof(INT), 1, fp);
 
    iNumChunk = (SWAP32(iNumChunk) - 4) / 4;
    return iNumChunk;
@@ -715,9 +715,9 @@ PAL_MKFGetChunkSize(
    //
    // Get the offset of the specified chunk and the next chunk.
    //
-   fseek(fp, 4 * uiChunkNum, SEEK_SET);
-   fread(&uiOffset, sizeof(UINT), 1, fp);
-   fread(&uiNextOffset, sizeof(UINT), 1, fp);
+   _fseek(fp, 4 * uiChunkNum, SEEK_SET);
+   _fread(&uiOffset, sizeof(UINT), 1, fp);
+   _fread(&uiNextOffset, sizeof(UINT), 1, fp);
    uiOffset = SWAP32(uiOffset);
    uiNextOffset = SWAP32(uiNextOffset);
 
@@ -779,9 +779,9 @@ PAL_MKFReadChunk(
    //
    // Get the offset of the chunk.
    //
-   fseek(fp, 4 * uiChunkNum, SEEK_SET);
-   fread(&uiOffset, 4, 1, fp);
-   fread(&uiNextOffset, 4, 1, fp);
+   _fseek(fp, 4 * uiChunkNum, SEEK_SET);
+   _fread(&uiOffset, 4, 1, fp);
+   _fread(&uiNextOffset, 4, 1, fp);
    uiOffset = SWAP32(uiOffset);
    uiNextOffset = SWAP32(uiNextOffset);
 
@@ -797,8 +797,8 @@ PAL_MKFReadChunk(
 
    if (uiChunkLen != 0)
    {
-      fseek(fp, uiOffset, SEEK_SET);
-      fread(lpBuffer, uiChunkLen, 1, fp);
+      _fseek(fp, uiOffset, SEEK_SET);
+      _fread(lpBuffer, uiChunkLen, 1, fp);
    }
    else
    {
@@ -852,15 +852,15 @@ PAL_MKFGetDecompressedSize(
    //
    // Get the offset of the chunk.
    //
-   fseek(fp, 4 * uiChunkNum, SEEK_SET);
-   fread(&uiOffset, 4, 1, fp);
+   _fseek(fp, 4 * uiChunkNum, SEEK_SET);
+   _fread(&uiOffset, 4, 1, fp);
    uiOffset = SWAP32(uiOffset);
 
    //
    // Read the header.
    //
-   fseek(fp, uiOffset, SEEK_SET);
-   fread(buf, sizeof(DWORD), 2, fp);
+   _fseek(fp, uiOffset, SEEK_SET);
+   _fread(buf, sizeof(DWORD), 2, fp);
 
    buf[0] = SWAP32(buf[0]);
    buf[1] = SWAP32(buf[1]);
