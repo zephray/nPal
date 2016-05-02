@@ -691,7 +691,7 @@ PAL_LoadObjectDesc(
 {
    FILE                      *fp;
    PAL_LARGE char             buf[512];
-   char                      *p;
+   char                      *p, *pbuf;
    LPOBJECTDESC               lpDesc = NULL, pNew = NULL;
    unsigned int               i;
 
@@ -699,6 +699,7 @@ PAL_LoadObjectDesc(
 
    if (fp == NULL)
    {
+      printf("Cannot open description file. Fallback to null.\n");
       return NULL;
    }
    //
@@ -715,10 +716,20 @@ PAL_LoadObjectDesc(
       p++;
 
       pNew = UTIL_calloc(1, sizeof(OBJECTDESC));
-      sscanf(buf, "%x", &i);
+      //sscanf(buf, "%x", &i);
+      i = 0;
+      pbuf = buf;
+      while(*pbuf != '(') {
+         i *= 16;
+         if ('0' <= *pbuf && *pbuf <= '9')
+            i += *pbuf - '0';
+         else
+            i += *pbuf - 'a' + 10;
+         pbuf++;
+      }
       pNew->wObjectID = i;
-	    pNew->lpDesc = malloc(strlen(p));
-	    strcpy(pNew->lpDesc,p);
+      pNew->lpDesc = malloc(strlen(p) + 1);
+      strcpy(pNew->lpDesc,p);
       //pNew->lpDesc = strdup(p);
       pNew->next = lpDesc;
       lpDesc = pNew;

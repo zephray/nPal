@@ -73,7 +73,7 @@ PAL_InitGlobals(
    gpGlobals->f.fpFIRE = UTIL_OpenRequiredFile("fire.mkf.tns");
    gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf.tns");
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf.tns");
-   //gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(va("%s%s", PAL_PREFIX, "desc.dat.tns"));
+   gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(PAL_PREFIX "desc.dat.tns");
    gpGlobals->bCurrentSaveSlot = 1;
 
    return 0;

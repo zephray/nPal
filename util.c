@@ -601,23 +601,20 @@ void _fseek(FILE *fp, long int off, int type) {
       default:
          break;
    }
-   /*printf("0x%x\n", current_position[index]);*/
 }
 
 void _fread(void *ptr, size_t size, size_t count, FILE *fp) {
    int index = (int)fp;    // sorry im doing this again ...
+   
    fseek(resources, offists[index] + current_position[index], SEEK_SET);
-   /*printf("Starting to read %s at %x where real pos is %x",
-      fnames[index], current_position[index],
-      offists[index] + current_position[index]
-      );*/
    fread(ptr, size, count, resources);
+   
    current_position[index] = ftell(resources) - offists[index];
+   
    if (current_position[index] < 0)
       current_position[index] = 0;
    if (current_position[index] >= offists[index + 1] - offists[index])
       current_position[index] = offists[index + 1] - offists[index];
-   /*printf(" => %x\n", current_position[index]);*/
 }
 
 long int _ftell(FILE *fp) {
