@@ -126,7 +126,8 @@ typedef union
 
 static TYPE_NUM_T  g_type_data;
 
-const char        fnames[][1024] = {
+const char        fnames[][32] = {
+                     "DUMMY",
                      "ABC.MKF.TNS",  //0
                      "BALL.MKF.TNS", //1
                      "DATA.MKF.TNS", //2
@@ -149,6 +150,7 @@ const char        fnames[][1024] = {
                    };
 FILE              *resources = NULL;
 long int           offists[] = {
+                      0x0,
                       0x0,            //0
                       0xF9A64,        //1
                       0x11A894,       //2
@@ -169,7 +171,7 @@ long int           offists[] = {
                       0x16CBAB2,      //17
                       0x16CD0C4
                    };
-long int           current_position[18] = {
+long int           current_position[20] = {
                       0x0
                    };
 
